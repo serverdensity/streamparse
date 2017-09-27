@@ -107,10 +107,11 @@ def create_or_update_virtualenvs(env_name, topology_name, options=None, virtuale
     activate_env(env_name, storm_options, config_file=config_file)
 
     # Actually create or update virtualenv on worker nodes
-    execute(_create_or_update_virtualenv, env.virtualenv_root, virtualenv_name,
-            requirements_paths,
-            virtualenv_flags=options.get('virtualenv_flags'),
-            hosts=env.storm_workers)
+    _create_or_update_virtualenv(env.virtualenv_root,
+                                 virtualenv_name,
+                                 requirements_paths,
+                                 virtualenv_flags=env_config.get('virtualenv_flags'),
+                                 hosts=env.storm_workers)
 
 
 def subparser_hook(subparsers):
