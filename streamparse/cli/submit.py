@@ -11,14 +11,13 @@ import time
 from itertools import chain
 
 import simplejson as json
-from fabric.api import env
 from pkg_resources import parse_version
 from six import itervalues
 
 from ..dsl.component import JavaComponentSpec
 from ..thrift import ShellComponent
 
-from ..util import (activate_env, get_config, get_env_config,
+from ..util import (get_config_dict, get_config, get_env_config,
                     get_nimbus_client, get_topology_definition,
                     get_topology_from_file, nimbus_storm_version,
                     set_topology_serializer, ssh_tunnel, warn)
@@ -161,8 +160,8 @@ def submit_topology(name=None, env_name=None, options=None, force=False,
     # Check if user wants to install virtualenv during the process
     install_venv = env_config.get('install_virtualenv', use_venv)
 
-    # Setup the fabric env dictionary
-    activate_env(env_name)
+    # Get the env config dictionary
+    env_dict = get_config_dict(env_name)
 
     # Handle option conflicts
     options = resolve_options(options, env_config, topology_class,
@@ -179,7 +178,7 @@ def submit_topology(name=None, env_name=None, options=None, force=False,
                                          virtualenv_name=virtualenv_name,
                                          requirements_paths=requirements_paths,
                                          config_file=config_file)
-        streamparse_run_path = '/'.join([env.virtualenv_root, virtualenv_name,
+        streamparse_run_path = '/'.join([env_dict['virtualenv_root'], virtualenv_name,
                                          'bin', 'streamparse_run'])
         # Update python paths in bolts
         for thrift_bolt in itervalues(topology_class.thrift_bolts):
@@ -279,7 +278,6 @@ def subparser_hook(subparsers):
 
 def main(args):
     """ Submit a Storm topology to Nimbus. """
-    env.pool_size = args.pool_size
     submit_topology(name=args.name, env_name=args.environment,
                     options=args.options, force=args.force, wait=args.wait,
                     simple_jar=args.simple_jar,
