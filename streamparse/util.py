@@ -568,6 +568,13 @@ def set_topology_serializer(env_config, config, topology_class):
                                                        inner_shell.script)
 
 
+def print_ssh_output(output):
+    """Helper for printing output for all hosts from ParallelSSH"""
+    for host, host_output in output.items():
+        for line in host_output.stdout:
+            print("[%s] out: %s" % (host, line))
+
+
 def _colorize(code):
     """
     Function akin to fabric.colors to colorize output
