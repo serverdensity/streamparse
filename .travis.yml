@@ -14,7 +14,7 @@ python:
 addons:
   apt:
     packages:
-    - libssh2
+      - libssh2-1-dev
 
 install:
   - travis_retry pip install --upgrade pip setuptools
