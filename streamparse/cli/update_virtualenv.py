@@ -12,18 +12,23 @@ from gevent import joinall
 from six import string_types
 
 from pssh.pssh2_client import ParallelSSHClient
-from .common import (add_config, add_environment, add_name, add_options, add_override_name,
-                     add_pool_size, add_requirements, resolve_options)
+
+from .common import (add_config, add_environment, add_name, add_options,
+                     add_override_name, add_pool_size, add_requirements,
+                     resolve_options)
 from ..util import (get_config_dict, die, get_config, get_env_config,
                     get_topology_definition, get_topology_from_file,
                     print_ssh_output)
 
 
-def _create_or_update_virtualenv(virtualenv_root, virtualenv_name, requirements_paths, hosts=None,
-                                 virtualenv_flags=None):
+def _create_or_update_virtualenv(virtualenv_root, virtualenv_name,
+                                 requirements_paths, hosts=None,
+                                 virtualenv_flags=None, pool_size=10):
     virtualenv_path = '/'.join((virtualenv_root, virtualenv_name))
-    ssh_client = ParallelSSHClient(hosts)
+    ssh_client = ParallelSSHClient(hosts, pool_size=pool_size)
     virtualenv_exists_output = ssh_client.run_command('if [ -d {} ]; then echo \"present\"; fi'.format(virtualenv_path))
+
+    print('Checking which workers need fresh virtualenvs...')
 
     hosts_without_virtualenv = []
     for host, host_output in virtualenv_exists_output.items():
@@ -35,6 +40,7 @@ def _create_or_update_virtualenv(virtualenv_root, virtualenv_name, requirements_
             hosts_without_virtualenv.append(host)
 
     ssh_client.hosts = hosts_without_virtualenv
+    print('Creating virtualenvs as necessary...')
     output = ssh_client.run_command("virtualenv {} {}".format(virtualenv_path, virtualenv_flags))
     ssh_client.join(output)
 
@@ -56,15 +62,18 @@ def _create_or_update_virtualenv(virtualenv_root, virtualenv_name, requirements_
 
         output = ssh_client.run_command("{} && {} && {}".format(virtualenv_activate, pip_upgrade,
                                                                 pip_requirements_install))
-        ssh_client.join(output)
         print_ssh_output(output)
+        ssh_client.join(output)
         output = ssh_client.run_command("rm {}".format(temp_req))
         ssh_client.join(output)
         print_ssh_output(output)
 
+    print('Updated virtualenvs on all Storm workers.')
 
-def create_or_update_virtualenvs(env_name, topology_name, options=None, virtualenv_name=None,
-                                 requirements_paths=None, config_file=None):
+
+def create_or_update_virtualenvs(env_name, topology_name, options,
+                                 virtualenv_name=None, requirements_paths=None,
+                                 config_file=None, pool_size=10):
     """Create or update virtualenvs on remote servers.
 
     Assumes that virtualenv is on the path of the remote server(s).
@@ -75,6 +84,7 @@ def create_or_update_virtualenvs(env_name, topology_name, options=None, virtuale
                           though the topology file has a different name.
     :param requirements_paths: a list of paths to requirements files to use to
                                create virtualenv
+    :param pool_size: Number of simultaneous ssh connections to use.
     """
     config = get_config()
     topology_name, topology_file = get_topology_definition(topology_name, config_file=config_file)
@@ -135,4 +145,5 @@ def main(args):
     create_or_update_virtualenvs(args.environment, args.name, args.options,
                                  virtualenv_name=args.override_name,
                                  requirements_paths=args.requirements,
-                                 config_file=args.config)
+                                 config_file=args.config,
+                                 pool_size=args.pool_size)

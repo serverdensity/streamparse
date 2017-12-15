@@ -142,7 +142,8 @@ def _upload_jar(nimbus_client, local_path):
 def submit_topology(name=None, env_name=None, options=None, force=False,
                     wait=None, simple_jar=True, override_name=None,
                     requirements_paths=None, local_jar_path=None,
-                    remote_jar_path=None, timeout=None, config_file=None):
+                    remote_jar_path=None, timeout=None, config_file=None,
+                    pool_size=10):
     """Submit a topology to a remote Storm cluster."""
     config = get_config()
     name, topology_file = get_topology_definition(name, config_file=config_file)
@@ -177,7 +178,8 @@ def submit_topology(name=None, env_name=None, options=None, force=False,
             create_or_update_virtualenvs(env_name, name, options,
                                          virtualenv_name=virtualenv_name,
                                          requirements_paths=requirements_paths,
-                                         config_file=config_file)
+                                         config_file=config_file,
+                                         pool_size=pool_size)
         streamparse_run_path = '/'.join([env_dict['virtualenv_root'], virtualenv_name,
                                          'bin', 'streamparse_run'])
         # Update python paths in bolts
@@ -286,4 +288,5 @@ def main(args):
                     local_jar_path=args.local_jar_path,
                     remote_jar_path=args.remote_jar_path,
                     timeout=args.timeout,
-                    config_file=args.config)
+                    config_file=args.config,
+                    pool_size=args.pool_size)
