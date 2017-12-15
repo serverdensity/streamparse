@@ -11,6 +11,10 @@ python:
   - "3.6-dev"
   # - "3.7-dev" -- to be added when beta is out - see https://www.python.org/dev/peps/pep-0537/#id6
   - "pypy-5.4.1"
+addons:
+  apt:
+    packages:
+    - libssh2
 
 install:
   - travis_retry pip install --upgrade pip setuptools
