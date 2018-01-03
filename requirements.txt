@@ -1,6 +1,6 @@
 fabric3
 jinja2
-parallel-ssh>=1.2.1.post1
+parallel-ssh>=1.2.1.post3
 pystorm>=3.1.1
 requests
 ruamel.yaml

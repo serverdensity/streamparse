@@ -165,7 +165,7 @@ def submit_topology(name=None, env_name=None, options=None, force=False,
     env_dict = get_config_dict(env_name)
 
     # Handle option conflicts
-    options = resolve_options(options, env_config, topology_class,
+    options = resolve_options(options, env_dict, topology_class,
                               override_name)
 
     # Run pre_submit actions provided by project

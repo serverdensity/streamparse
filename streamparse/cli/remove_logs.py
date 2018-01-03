@@ -52,7 +52,7 @@ def remove_logs(topology_name=None, env_name=None, pattern=None,
     env_name, env_config = get_env_config(env_name, config_file=config_file)
 
     options = resolve_options(options, env_config, topology_class,
-                              override_name)
+                              topology_name)
     env_dict = get_config_dict(env_name, options=options,
                                config_file=config_file)
     log_path = env_dict['log_path']
