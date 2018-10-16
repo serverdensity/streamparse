@@ -1,5 +1,6 @@
 fabric3
 jinja2
+pyinstaller
 pystorm>=3.1.1
 requests
 ruamel.yaml
