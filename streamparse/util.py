@@ -452,6 +452,11 @@ def prepare_topology():
     if os.path.isdir(resources_dir):
         shutil.rmtree(resources_dir)
 
+    if os.path.exists('src'):
+        shutil.copytree("src", resources_dir)
+    else:
+        raise FileNotFoundError('Your project must have a "src" directory.')
+
     streamparse_path = shutil.which('streamparse_run')
     streamparse_path = '/srv/venv/bin/streamparse_run'
     if streamparse_path is None:
@@ -459,12 +464,6 @@ def prepare_topology():
 
     pyinstaller_run(
         ['--distpath', resources_dir, '--clean', '--onefile', streamparse_path])
-
-    if os.path.exists('src'):
-        shutil.copytree("src", resources_dir)
-    else:
-        raise FileNotFoundError('Your project must have a "src" directory.')
-
 
 def _get_file_names_command(path, patterns):
     """Given a list of bash `find` patterns, return a string for the
