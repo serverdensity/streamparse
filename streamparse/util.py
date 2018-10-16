@@ -453,6 +453,7 @@ def prepare_topology():
         shutil.rmtree(resources_dir)
 
     streamparse_path = shutil.which('streamparse_run')
+    streamparse_path = '/srv/venv/bin/streamparse_run'
     if streamparse_path is None:
         raise FileNotFoundError('streamparse_run command was not found')
 
