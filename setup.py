@@ -38,6 +38,7 @@ install_requires = [
     'texttable',
     'six>=1.5',
     'simplejson',
+    'pyinstaller',
     'pystorm>=3.1.1',
     'thriftpy>=0.3.2',
     'ruamel.yaml'

@@ -25,6 +25,7 @@ from six.moves.socketserver import UDPServer, TCPServer
 from thriftpy.protocol import TBinaryProtocolFactory
 from thriftpy.rpc import make_client
 from thriftpy.transport import TFramedTransportFactory
+from PyInstaller.__main__ import run as pyinstaller_run
 
 from .dsl.topology import Topology, TopologyType
 from .thrift import Nimbus
@@ -455,14 +456,8 @@ def prepare_topology():
     if streamparse_path is None:
         raise FileNotFoundError('streamparse_run command was not found')
 
-    pyinstaller_cmd = [
-        'pyinstaller', '--distpath', resources_dir, '--clean', '--onefile', streamparse_path
-    ]
-
-    pyinstaller_cproc = subprocess.run(pyinstaller_cmd, capture_output=True)
-
-    if pyinstaller_cproc.returncode != 0:
-        raise RuntimeError("Error while running pyinstaller: {}".format(pyinstaller_cproc.stderr))
+    pyinstaller_run(
+        ['--distpath', resources_dir, '--clean', '--onefile', streamparse_path])
 
     if os.path.exists('src'):
         shutil.copytree("src", resources_dir)
