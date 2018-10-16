@@ -450,6 +450,20 @@ def prepare_topology():
     resources_dir = join("_resources", "resources")
     if os.path.isdir(resources_dir):
         shutil.rmtree(resources_dir)
+
+    streamparse_path = shutil.which('streamparse_run')
+    if streamparse_path is None:
+        raise FileNotFoundError('streamparse_run command was not found')
+
+    pyinstaller_cmd = [
+        'pyinstaller', '--distpath', resources_dir, '--clean', '--onefile', streamparse_path
+    ]
+
+    pyinstaller_cproc = subprocess.run(pyinstaller_cmd, capture_output=True)
+
+    if pyinstaller_cproc.returncode != 0:
+        raise RuntimeError("Error while running pyinstaller: {}".format(pyinstaller_cproc.stderr))
+
     if os.path.exists('src'):
         shutil.copytree("src", resources_dir)
     else:
