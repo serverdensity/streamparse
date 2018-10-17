@@ -329,10 +329,9 @@ def get_nimbus_config(env_config):
     """
     nimbus_info = get_nimbus_host_port(env_config)
     if nimbus_info not in _nimbus_configs:
-        with ssh_tunnel(env_config) as (host, port):
-            nimbus_client = get_nimbus_client(env_config, host=host, port=port)
-            nimbus_json = nimbus_client.getNimbusConf()
-            nimbus_conf = json.loads(nimbus_json)
+        nimbus_client = get_nimbus_client(env_config)
+        nimbus_json = nimbus_client.getNimbusConf()
+        nimbus_conf = json.loads(nimbus_json)
         _nimbus_configs[nimbus_info] = nimbus_conf
     return _nimbus_configs[nimbus_info]
 
