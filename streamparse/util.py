@@ -310,10 +310,9 @@ def get_storm_workers(env_config):
 
     worker_list = env_config.get('workers')
     if not worker_list:
-        with ssh_tunnel(env_config) as (host, port):
-            nimbus_client = get_nimbus_client(env_config, host=host, port=port)
-            cluster_info = nimbus_client.getClusterInfo()
-            worker_list = [supervisor.host for supervisor in cluster_info.supervisors]
+        nimbus_client = get_nimbus_client(env_config, host=host, port=port)
+        cluster_info = nimbus_client.getClusterInfo()
+        worker_list = [supervisor.host for supervisor in cluster_info.supervisors]
 
     _storm_workers[nimbus_info] = worker_list
     return worker_list
