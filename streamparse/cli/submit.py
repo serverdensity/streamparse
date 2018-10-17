@@ -170,7 +170,7 @@ def submit_topology(name=None, env_name=None, options=None, force=False,
 
     print(options)
     # Check if we need to maintain virtualenv during the process
-    use_venv = options.get('use_virtualenv', True)
+    use_venv = options.get('use_virtualenv', False)
 
     # Check if user wants to install virtualenv during the process
     install_venv = options.get('install_virtualenv', use_venv)
