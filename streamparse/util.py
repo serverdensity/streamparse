@@ -461,7 +461,8 @@ def prepare_topology():
         raise FileNotFoundError('streamparse_run command was not found')
 
     pyinstaller_run(
-        ['--distpath', resources_dir, '--clean', '--onefile', streamparse_path])
+        ['--distpath', resources_dir, '--clean', '--onefile', streamparse_path,
+         '-p', '/srv/venv/lib/python3.5/site-packages/'])
 
 def _get_file_names_command(path, patterns):
     """Given a list of bash `find` patterns, return a string for the

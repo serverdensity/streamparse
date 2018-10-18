@@ -168,7 +168,6 @@ def submit_topology(name=None, env_name=None, options=None, force=False,
     options = resolve_options(options, env_config, topology_class,
                               override_name)
 
-    print(options)
     # Check if we need to maintain virtualenv during the process
     use_venv = options.get('use_virtualenv', False)
 
