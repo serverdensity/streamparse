@@ -460,9 +460,18 @@ def prepare_topology():
     if streamparse_path is None:
         raise FileNotFoundError('streamparse_run command was not found')
 
-    pyinstaller_run(
-        ['--distpath', resources_dir, '--clean', '--onefile', streamparse_path,
-         '-p', '/srv/venv/lib/python3.5/site-packages/'])
+    hidden_imports = [
+        'bolts.wordcount',
+        'spouts.words',
+        'thriftpy.transport.cybase',
+    ]
+
+    pyinstaller_args = ['--distpath', resources_dir, '--clean', '--onefile', streamparse_path]
+    for hidden_import in hidden_imports:
+        pyinstaller_args.append('--hidden-import')
+        pyinstaller_args.append(hidden_import)
+
+    pyinstaller_run(pyinstaller_args)
 
 def _get_file_names_command(path, patterns):
     """Given a list of bash `find` patterns, return a string for the
