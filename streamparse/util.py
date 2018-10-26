@@ -466,7 +466,7 @@ def prepare_topology():
         'thriftpy.transport.cybase',
     ]
 
-    pyinstaller_args = ['--distpath', resources_dir, '--clean', '--onefile', streamparse_path]
+    pyinstaller_args = ['--distpath', resources_dir, '--clean', '--onefile', 'topologies/smaggregator.py', streamparse_path]
     for hidden_import in hidden_imports:
         pyinstaller_args.append('--hidden-import')
         pyinstaller_args.append(hidden_import)
