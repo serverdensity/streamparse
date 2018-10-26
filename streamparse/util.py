@@ -461,8 +461,7 @@ def prepare_topology():
         raise FileNotFoundError('streamparse_run command was not found')
 
     hidden_imports = [
-        'bolts',
-        'spouts',
+        'smaggregator',
         'thriftpy.transport.cybase',
     ]
 
