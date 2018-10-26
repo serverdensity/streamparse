@@ -461,8 +461,6 @@ def prepare_topology():
         raise FileNotFoundError('streamparse_run command was not found')
 
     hidden_imports = [
-        'bolts.pixel_count',
-        'bolts.pixel_deserializer',
         'thriftpy.transport.cybase',
     ]
 
